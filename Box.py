@@ -164,6 +164,14 @@ class Box:
     def cy(self, cy):
         self.moveBy(0, cy - self.cy)
 
+    @property
+    def area(self) -> float:
+        return self.__w * self.__h
+
+    @property
+    def perimeter(self) -> float:
+        return 2 * self.__w + 2 * self.__h
+
 
 if __name__ == "__main__":
     box = Box(xywh=(0, 0, 30, 10))
