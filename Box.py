@@ -46,6 +46,10 @@ class Box:
         if module.__name__ == "cv2.cv2":
             module.rectangle(frame, (self.x1, self.y1), (self.x2, self.y2), color, 2)
 
+    def includes(self, x: int, y: int):
+        """Checks if a coordinate is inside the Box"""
+        return self.x1 < x < self.x2 and self.y1 < y < self.y2
+
     def __set_center(self):
         self.__cx = self.x1 + self.w / 2
         self.__cy = self.y1 + self.h / 2
