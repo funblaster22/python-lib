@@ -2,9 +2,13 @@ from typing import Tuple
 
 
 class Box:
+    _tk = None
+    __tk_canvas = None
+    
     def __init__(self, *, xywh: Tuple[int, int, int, int]=None, xyxy: Tuple[int, int, int, int]=None, ccwh: Tuple[int, int, int, int]=None, box: "Box"=None):
         self.__x1 = self.__x2 = self.__y1 = self.__y2 = self.__w = self.__h = self.__cx = self.__cy = 0
         self.set_pos(xywh=xywh, xyxy=xyxy, ccwh=ccwh, box=box)
+        # This is the window for drawing 
 
     def set_pos(self, *, xywh: Tuple[int, int, int, int]=None, xyxy: Tuple[int, int, int, int]=None, ccwh: Tuple[int, int, int, int]=None, box: "Box"=None):
         if xywh is not None:
@@ -20,6 +24,7 @@ class Box:
             self.x1, self.y1, self.x2, self.y2 = (box.x1, box.y1, box.x2, box.y2)
         self.__set_center()
 
+    """ TODO: can this be written more efficiently w/o recursion? I think reverse should only be used internally, which isn't clear """
     def chk_collision(self, other: "Box", *, reverse=True) -> bool:
         if ((other.x1 < self.x1 < other.x2 or other.x1 < self.x2 < other.x2)
             and (other.y1 < self.y1 < other.y2 or other.y1 < self.y2 < other.y2))\
@@ -28,6 +33,7 @@ class Box:
         return False
 
     def moveBy(self, dx: int, dy: int):
+        # One coordinate is updated manually because TODO
         self.__x1 += dx
         self.__y1 += dy
         self.x2 += dx
@@ -42,13 +48,37 @@ class Box:
             transform = (0, 0)
         self.moveBy(*transform)
 
-    def show(self, module, frame, color=(0,0,255)):
-        if module.__name__ == "cv2.cv2":
-            module.rectangle(frame, (self.x1, self.y1), (self.x2, self.y2), color, 2)
+    def show(self, module=None, frame=None, color=None):
+        """ If module and frame is None, create a debugging tkinter window. The only backend that is currently implemented is openCV """
+        if module is None:  # TODO: This method is untested because I forgot all Tkinter, I'm too tired, & I should be doing college apps
+            from tkinter import Tk, Canvas
+            if self._tk is None:
+                type(self)._tk = Tk()
+                type(self).__tk_canvas = Canvas(self._tk)
+                self.__tk_canvas.pack(fill="both", expand=True)
+            self.__tk_canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2, outline="black" if color is None else color)
+            width = max(self._tk.winfo_width(), self.x2) + 5
+            height = max(self._tk.winfo_height(), self.y2) + 5
+            self._tk.geometry(str(width) + "x" + str(height))
+        elif module.__name__ == "cv2.cv2":
+            module.rectangle(frame, (self.x1, self.y1), (self.x2, self.y2), (0,0,255) if color is None else color, 2)
 
     def includes(self, x: int, y: int):
         """Checks if a coordinate is inside the Box"""
         return self.x1 < x < self.x2 and self.y1 < y < self.y2
+
+    @staticmethod
+    def intersection(one: "Box", two: "Box") -> "Box":
+        """Note: even if the boxes don't intersect, this will return a Box with 0 area & all vertices are the rightmost corner of box two. Same if they share an edge. I chose this behavior over returning None because null checks are very inconvenient"""
+        x1 = max(one.x1, two.x1)
+        y1 = max(one.y1, two.y1)
+        x2 = min(one.x2, two.x2)
+        y2 = min(one.y2, two.y2)
+        # This is important because otherwise, it will falsely recognise overlap if box 2 is less than box 1
+        if x1 <= x2 and y1 <= y2:
+            return Box(xyxy=(x1, y1, x2, y2))
+        else:
+            return Box(xyxy=(0, 0, 0, 0))
 
     def __set_center(self):
         self.__cx = self.x1 + self.w / 2
