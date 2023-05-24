@@ -39,15 +39,6 @@ class Box:
         self.x2 += dx
         self.y2 += dy
 
-    def moveTo(self, *, x1y1: Tuple[int, int]=None, cxcy: Tuple[int, int]=None):
-        if x1y1 is not None:
-            transform = (x1y1[0] - self.x1, x1y1[1] - self.y1)
-        elif cxcy is not None:
-            transform = (cxcy[0] - self.cx, cxcy[1] - self.cy)
-        else:
-            transform = (0, 0)
-        self.moveBy(*transform)
-
     def show(self, module=None, frame=None, color=None):
         """ If module and frame is None, create a debugging tkinter window. The only backend that is currently implemented is openCV """
         if module is None:  # TODO: This method is untested because I forgot all Tkinter, I'm too tired, & I should be doing college apps
@@ -109,6 +100,10 @@ class Box:
     @property
     def ccwh(self):
         return self.cx, self.cy, self.w, self.h
+
+    @property
+    def center(self):
+        return self.cx, self.cy
 
     @property
     def x1(self):
