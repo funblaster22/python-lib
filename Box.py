@@ -1,6 +1,7 @@
 from typing import Tuple
 
 
+# TODO: make return types numpy immutable arrays? (.setflags(write=False))
 class Box:
     _tk = None
     __tk_canvas = None
@@ -78,7 +79,8 @@ class Box:
     def __str__(self):
         out = "Box("
         for key, val in self.__dict__.items():  # __dir__ was producing too much output
-            out += key[6:] + "=" + str(val) + ", "
+            unmangledKey = key.split("__")[-1]  # Remove private field prefix
+            out += unmangledKey + "=" + str(val) + ", "
         out = out[0:len(out)-2]
         out += ")"
         return out
@@ -88,6 +90,13 @@ class Box:
 
     def __sub__(self, other: "Box") -> Tuple[int, int]:
         return int(self.cx - other.cx), int(self.cy - other.cy)
+
+    def __bool__(self):
+        return self.xyxy != (0, 0, 0, 0)
+
+    def __eq__(self, other):
+        """Note: will not try to approximate doubles"""
+        return self.xyxy == other.xyxy
 
     @property
     def xyxy(self):
