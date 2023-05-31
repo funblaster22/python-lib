@@ -119,6 +119,14 @@ class Box:
         self.cx, self.cy = newCenter
 
     @property
+    def size(self):
+        return self.w, self.h
+
+    @size.setter
+    def size(self, newSize: tuple[int, int]):
+        self.w, self.h = newSize
+
+    @property
     def x1(self):
         return int(self.__x1)
 
