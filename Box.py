@@ -111,6 +111,10 @@ class Box:
         return Box(xyxy=(int(self.x1), int(self.y1), int(self.x2), int(self.y2)))
 
     @property
+    def slicer(self):
+        return slice(self.y1, self.y2, None), slice(self.x1, self.x2, None)  # Equivalent to [y1:y2, x1:x2]
+
+    @property
     def xyxy(self):
         return self.x1, self.y1, self.x2, self.y2
 
