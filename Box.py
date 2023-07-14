@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union
 
 
 # TODO: make return types numpy immutable arrays? (.setflags(write=False))
@@ -40,7 +40,7 @@ class Box:
         self.x2 += dx
         self.y2 += dy
 
-    def show(self, module=None, frame=None, color=None):
+    def show(self, module=None, frame=None, color=None, thickness=2):
         """ If module and frame is None, create a debugging tkinter window. The only backend that is currently implemented is openCV """
         if module is None:  # TODO: This method is untested because I forgot all Tkinter, I'm too tired, & I should be doing college apps
             from tkinter import Tk, Canvas
@@ -53,7 +53,7 @@ class Box:
             height = max(self._tk.winfo_height(), self.y2) + 5
             self._tk.geometry(str(width) + "x" + str(height))
         elif module.__name__ == "cv2.cv2":
-            module.rectangle(frame, (self.x1, self.y1), (self.x2, self.y2), (0,0,255) if color is None else color, 2)
+            module.rectangle(frame, (self.x1, self.y1), (self.x2, self.y2), (0,0,255) if color is None else color, thickness)
 
     def includes(self, x: int, y: int):
         """Checks if a coordinate is inside the Box"""
@@ -97,6 +97,18 @@ class Box:
     def __eq__(self, other):
         """Note: will not try to approximate doubles"""
         return self.xyxy == other.xyxy
+
+    def __mul__(self, other: Union[float, int]):
+        box = Box(xyxy=(self.x1 * other, self.y1 * other, self.x2 * other, self.y2 * other))
+        if isinstance(other, int):
+            return box.int()
+        return box
+
+    def __truediv__(self, other: Union[float, int]):
+        return self * (1 / other)
+
+    def int(self):
+        return Box(xyxy=(int(self.x1), int(self.y1), int(self.x2), int(self.y2)))
 
     @property
     def xyxy(self):
