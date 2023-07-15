@@ -34,9 +34,9 @@ class Box:
         return False
 
     def moveBy(self, dx: int, dy: int):
-        # One coordinate is updated manually because TODO
-        self.__x1 += dx
-        self.__y1 += dy
+        # __x1 and __y1 were set manually, but caused boxes to shrink in deal/no solver, so I changed it
+        self.x1 += dx
+        self.y1 += dy
         self.x2 += dx
         self.y2 += dy
 
