@@ -112,7 +112,7 @@ class Box:
 
     @property
     def slicer(self):
-        return slice(self.y1, self.y2, None), slice(self.x1, self.x2, None)  # Equivalent to [y1:y2, x1:x2]
+        return slice(self.y1, self.y2, None), slice(self.x1, self.x2, None)  # Equivalent to np.s_[y1:y2, x1:x2]
 
     @property
     def xyxy(self):
