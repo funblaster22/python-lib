@@ -52,7 +52,7 @@ class Box:
             width = max(self._tk.winfo_width(), self.x2) + 5
             height = max(self._tk.winfo_height(), self.y2) + 5
             self._tk.geometry(str(width) + "x" + str(height))
-        elif module.__name__ == "cv2":
+        elif module.__name__ == "cv2.cv2":
             module.rectangle(frame, (self.x1, self.y1), (self.x2, self.y2), (0,0,255) if color is None else color, thickness)
 
     def includes(self, x: int, y: int):
