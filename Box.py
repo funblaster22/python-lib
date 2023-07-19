@@ -27,14 +27,12 @@ class Box:
 
     """ TODO: can this be written more efficiently w/o recursion? I think reverse should only be used internally, which isn't clear """
     def chk_collision(self, other: "Box", *, reverse=True) -> bool:
-        if ((other.x1 < self.x1 < other.x2 or other.x1 < self.x2 < other.x2)
+        return ((other.x1 < self.x1 < other.x2 or other.x1 < self.x2 < other.x2)
             and (other.y1 < self.y1 < other.y2 or other.y1 < self.y2 < other.y2))\
-                or (reverse and other.chk_collision(self, reverse=False)):
-            return True
-        return False
+                or (reverse and other.chk_collision(self, reverse=False))
 
     def moveBy(self, dx: int, dy: int):
-        # __x1 and __y1 were set manually, but caused boxes to shrink in deal/no solver, so I changed it
+        # when __x1 and __y1 are set manually and dx or dy is a float, box changes size. Perf boost not worth it, so using abstractions
         self.x1 += dx
         self.y1 += dy
         self.x2 += dx
