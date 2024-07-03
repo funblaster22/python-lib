@@ -1,7 +1,6 @@
 from tkinter import *
 import sys
 from tkinter import filedialog
-#from tkinter import Tk
 
 
 class GUI:

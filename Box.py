@@ -1,17 +1,17 @@
 from typing import Tuple, Union
 
 
-# TODO: make return types numpy immutable arrays? (.setflags(write=False))
 class Box:
     _tk = None
     __tk_canvas = None
-    
-    def __init__(self, *, xywh: Tuple[int, int, int, int]=None, xyxy: Tuple[int, int, int, int]=None, ccwh: Tuple[int, int, int, int]=None, box: "Box"=None):
+
+    def __init__(self, *, xywh: Tuple[int, int, int, int] = None, xyxy: Tuple[int, int, int, int] = None,
+                 ccwh: Tuple[int, int, int, int] = None, box: "Box" = None):
         self.__x1 = self.__x2 = self.__y1 = self.__y2 = self.__w = self.__h = self.__cx = self.__cy = 0
         self.set_pos(xywh=xywh, xyxy=xyxy, ccwh=ccwh, box=box)
-        # This is the window for drawing 
 
-    def set_pos(self, *, xywh: Tuple[int, int, int, int]=None, xyxy: Tuple[int, int, int, int]=None, ccwh: Tuple[int, int, int, int]=None, box: "Box"=None):
+    def set_pos(self, *, xywh: Tuple[int, int, int, int] = None, xyxy: Tuple[int, int, int, int] = None,
+                ccwh: Tuple[int, int, int, int] = None, box: "Box" = None):
         if xywh is not None:
             self.x1, self.y1, self.w, self.h = xywh
         elif xyxy is not None:
@@ -25,10 +25,10 @@ class Box:
             self.x1, self.y1, self.x2, self.y2 = (box.x1, box.y1, box.x2, box.y2)
         self.__set_center()
 
-    """ TODO: can this be written more efficiently w/o recursion? I think reverse should only be used internally, which isn't clear """
+    # TODO: can this be written more efficiently w/o recursion? I think reverse should only be used internally, which isn't clear
     def chk_collision(self, other: "Box", *, reverse=True) -> bool:
         return ((other.x1 < self.x1 < other.x2 or other.x1 < self.x2 < other.x2)
-            and (other.y1 < self.y1 < other.y2 or other.y1 < self.y2 < other.y2))\
+                and (other.y1 < self.y1 < other.y2 or other.y1 < self.y2 < other.y2))\
                 or (reverse and other.chk_collision(self, reverse=False))
 
     def moveBy(self, dx: int, dy: int):
@@ -46,12 +46,14 @@ class Box:
                 type(self)._tk = Tk()
                 type(self).__tk_canvas = Canvas(self._tk)
                 self.__tk_canvas.pack(fill="both", expand=True)
-            self.__tk_canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2, outline="black" if color is None else color)
+            self.__tk_canvas.create_rectangle(self.x1, self.y1, self.x2, self.y2,
+                                              outline="black" if color is None else color)
             width = max(self._tk.winfo_width(), self.x2) + 5
             height = max(self._tk.winfo_height(), self.y2) + 5
             self._tk.geometry(str(width) + "x" + str(height))
         elif module.__name__ == "cv2.cv2":
-            module.rectangle(frame, (self.x1, self.y1), (self.x2, self.y2), (0,0,255) if color is None else color, thickness)
+            module.rectangle(frame, (self.x1, self.y1), (self.x2, self.y2), (0, 0, 255) if color is None else color,
+                             thickness)
 
     def includes(self, x: int, y: int):
         """Checks if a coordinate is inside the Box"""
@@ -79,7 +81,7 @@ class Box:
         for key, val in self.__dict__.items():  # __dir__ was producing too much output
             unmangledKey = key.split("__")[-1]  # Remove private field prefix
             out += unmangledKey + "=" + str(val) + ", "
-        out = out[0:len(out)-2]
+        out = out[0:len(out) - 2]
         out += ")"
         return out
 

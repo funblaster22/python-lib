@@ -15,13 +15,15 @@ server.starttls()
 server.ehlo()
 server.login(EMAIL, PW)
 
+
 def send(msg):
     #msg = "\nHello!"  # The /n separates the message from the headers
     server.sendmail(EMAIL, TARGET, msg)
     # server.quit()
     print('Message Sent!')
 
-def recieve():
+
+def receive():
     for mail_id in imapper.listids(limit=100):
         mail = imapper.mail(mail_id)
         if mail.from_addr == TARGET:
