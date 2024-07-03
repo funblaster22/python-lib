@@ -1,14 +1,9 @@
 import sys
-from tkinter import *
 VERSION = sys.version.split(' ')[0]
 
 
 def repl(globals=None, locals=None) -> None:
     print("Python {} Shell".format(VERSION))
-    dirs = ['C:\\Users\\Amy\\Documents\\python',
-            'C:\\Users\\Amy\\AppData\\Local\\Programs\\Python\\Python36\\lib']
-    for path in dirs:
-        sys.path.append(path)
 
     while True:
         try:
