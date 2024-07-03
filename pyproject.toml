@@ -1,0 +1,15 @@
+[project]
+name = "lib"
+version = "0.1.0"
+description = "Python utilities"
+authors = [
+    {name = "Ethan Dawes", email = "ethand.python@gmail.com"},
+]
+dependencies = []
+requires-python = ">=3.7"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = true
