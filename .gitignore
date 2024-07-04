@@ -1,2 +1,4 @@
 Talk.vbs
 config.json
+.pdm-python
+dist/
